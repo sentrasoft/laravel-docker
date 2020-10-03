@@ -1,7 +1,6 @@
 version: '2'
 services:
 
-  # App Service
   app:
     image: sentrasoft/laravel:php7.2-fpm
     working_dir: /var/www
@@ -11,24 +10,22 @@ services:
       - "DB_PORT=3306"
       - "DB_HOST=database"
     networks:
-      - app-network
+      - laravel
 
-  # Web Service
   web:
     image: nginx:1.15.8
     volumes:
       - ./:/var/www
       - .nginx:/etc/nginx/conf.d/default.conf
-      - .\ssl\local.cert:/etc/ssl/certs/local.cert
-      - .\ssl\local.key:/etc/ssl/certs/local.key
+      - ./ssl/local.cert:/etc/ssl/certs/local.cert
+      - ./ssl/local.key:/etc/ssl/certs/local.key
     working_dir: /var/www
     ports:
       - "8080:80"
       - "8443:443"
     networks:
-      - app-network
+      - laravel
 
-  # Database Service
   database:
     image: mysql:5.7
     volumes:
@@ -41,12 +38,11 @@ services:
     ports:
         - "3306:3306"
     networks:
-      - app-network
+      - laravel
 
 volumes:
   database:
 
-# Docker Networks
 networks:
-  app-network:
+  laravel:
     driver: bridge
