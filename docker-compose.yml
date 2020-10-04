@@ -1,48 +1,51 @@
-version: '2'
-services:
-
-  app:
-    image: sentrasoft/laravel:php7.2-fpm
-    working_dir: /var/www
-    volumes:
-      - ./:/var/www
-    environment:
-      - "DB_PORT=3306"
-      - "DB_HOST=database"
-    networks:
-      - laravel
-
-  web:
-    image: nginx:1.15.8
-    volumes:
-      - ./:/var/www
-      - .nginx:/etc/nginx/conf.d/default.conf
-      - ./ssl/local.cert:/etc/ssl/certs/local.cert
-      - ./ssl/local.key:/etc/ssl/certs/local.key
-    working_dir: /var/www
-    ports:
-      - "8080:80"
-      - "8443:443"
-    networks:
-      - laravel
-
-  database:
-    image: mysql:5.7
-    volumes:
-      - database:/var/lib/mysql
-    environment:
-      - "MYSQL_DATABASE=laravel"
-      - "MYSQL_USER=root"
-      - "MYSQL_PASSWORD=secret"
-      - "MYSQL_ROOT_PASSWORD=secret"
-    ports:
-        - "3306:3306"
-    networks:
-      - laravel
-
-volumes:
-  database:
+version: '3'
 
 networks:
-  laravel:
-    driver: bridge
+    network:
+        
+volumes:
+    mysql:
+        
+services:
+    app:
+        image: sentrasoft/laravel:php7.4-fpm
+        container_name: app
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+        networks:
+            - network
+
+    mysql:
+        image: mysql:5.7
+        container_name: mysql
+        volumes:
+            - ./database/mysql:/var/lib/mysql
+        environment:
+            - "MYSQL_DATABASE=laravel"
+            - "MYSQL_USER=trooper"
+            - "MYSQL_PASSWORD=secret"
+            - "MYSQL_ROOT_PASSWORD=secret"
+        tty: true
+        ports:
+            - "3306:3306"
+        networks:
+            - network
+
+    nginx:
+        image: nginx:1.15.8
+        container_name: nginx
+        volumes:
+            - ./:/var/www
+            - ./.nginx:/etc/nginx/conf.d/default.conf
+            - ./ssl/local.cert:/etc/ssl/certs/local.cert
+            - ./ssl/local.key:/etc/ssl/certs/local.key
+        depends_on:
+            - app
+            - mysql
+        working_dir: /var/www
+        ports:
+            - "8080:80"
+            - "8443:443"
+        networks:
+            - network
