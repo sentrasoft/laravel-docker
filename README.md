@@ -16,7 +16,11 @@ laravel new src --force
 After initializing the Laravel project, make sure these lines are adjusted in the Laravel .env file.
 
 ```
-...
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=trooper
+DB_PASSWORD=secret
 
 COMPOSE_PROJECT_NAME=laravel-project-1
 ```
@@ -32,7 +36,14 @@ docker-compose up -d
 
 > You can open the project url at [http://localhost:8080](http://localhost:8080) or you can customize the port at [docker-compose.yml](docker-compose.yml).
 
-### Permissions
+### Migrating
+Database host and port in [/src/.env](/src/.env) use `mysql` as host and `port 3306`, this host and port can be accessed by the app container. Therefore, to run `artisan migrate`, please do it via `docker-compose exec`.
+
+```
+docker-compose exec app php artisan migrate
+```
+
+### Storage Permission
 If an error occurs with storage permissions, execute this command to fix permissions:
 
 ```
