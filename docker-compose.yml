@@ -9,7 +9,7 @@ volumes:
 services:
     app:
         image: sentrasoft/laravel:php7.4-fpm
-        container_name: app
+        container_name: ${COMPOSE_PROJECT_NAME}_app
         working_dir: /var/www
         volumes:
             - ./src:/var/www
@@ -18,7 +18,7 @@ services:
 
     mysql:
         image: mysql:5.7
-        container_name: mysql
+        container_name: ${COMPOSE_PROJECT_NAME}_mysql
         volumes:
             - ./.data:/var/lib/mysql
         environment:
@@ -34,7 +34,7 @@ services:
 
     nginx:
         image: nginx:1.15.8
-        container_name: nginx
+        container_name: ${COMPOSE_PROJECT_NAME}_nginx
         volumes:
             - ./src:/var/www
             - ./.ssl/local.cert:/etc/ssl/certs/local.cert
