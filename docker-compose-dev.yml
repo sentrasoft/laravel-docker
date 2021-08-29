@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+    app:
+        volumes:
+            - laravel-project-1_sync:/var/www:nocopy
+
+volumes:
+    laravel-project-1_sync:
+        external: true

@@ -1,0 +1,13 @@
+version: '2'
+
+options:
+    compose-file-path: './docker-compose.yml'
+    compose-dev-file-path: './docker-compose-dev.yml'
+    verbose: true
+
+syncs:
+    laravel-project-1_sync:
+        notify_terminal: true
+        src: './src'
+        sync_userid: '1'
+        sync_excludes: ['.git', '.idea', 'node_modules']
