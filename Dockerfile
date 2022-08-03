@@ -1,39 +1,39 @@
-FROM php:8.0-fpm
+FROM php:8.1-fpm
 
-# Set Working Directory
 WORKDIR /var/www
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    default-mysql-client \
-    libzip-dev \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    locales \
-    zip \
-    jpegoptim optipng pngquant gifsicle \
-    nano \
-    unzip \
-    git \
-    curl \
-    cron \
-    iputils-ping
+RUN apt-get update \
+    && apt-get install -y \
+        build-essential \
+        default-mysql-client \
+        libzip-dev \
+        libpng-dev \
+        libjpeg62-turbo-dev \
+        libfreetype6-dev \
+        libonig-dev \
+        locales \
+        zip \
+        jpegoptim optipng pngquant gifsicle \
+        nano \
+        unzip \
+        git \
+        curl \
+        cron \
+        iputils-ping \
+    && curl -fsSL https://deb.nodesource.com/setup_14.x | bash - \
+    && apt-get update \
+    && apt-get install -y nodejs \
+    && apt-get -y autoremove \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl \
+    && docker-php-ext-configure gd --enable-gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
+    && docker-php-ext-install gd
 
-# Setup Timezone
-RUN echo "Asia/Jakarta" > /etc/timezone && rm -f /etc/localtime && dpkg-reconfigure -f noninteractive tzdata
+RUN sed -i -e 's/# id_ID.UTF-8 UTF-8/id_ID.UTF-8 UTF-8/' /etc/locale.gen \
+    && echo "Asia/Jakarta" > /etc/timezone \
+    && dpkg-reconfigure --frontend=noninteractive locales
 
-# Install extensions
-RUN docker-php-ext-install pdo_mysql zip exif pcntl
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install gd
-
-# Install Composer
-RUN curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Install Laravel Envoy
-RUN composer global require "laravel/envoy"
+RUN curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && composer global require "laravel/envoy"
