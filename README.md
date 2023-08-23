@@ -2,14 +2,19 @@
 Generic Docker Image for Laravel Application. A pretty simplified Docker Compose workflow that sets up a LEMP network of containers for local Laravel development.
 
 ## Usage
-To get started, make sure you have [Docker installed](https://docs.docker.com/docker-for-mac/install/) on your system, and then clone this repository.
+To get started, make sure you have [Docker Desktop](https://docs.docker.com/docker-for-mac/install/) installed on your system, and then clone this repository.
 
 ## Install Laravel
-Initialize the Laravel project in the `/src` directory. We usually use the [Laravel Installer](https://laravel.com/docs/8.x/installation#installing-laravel) to initialize a Laravel project.
+Initialize the Laravel project in the `/src` directory. We usually use the [Laravel Installer](https://laravel.com/docs/10.x/installation#installing-laravel) to initialize a Laravel project.
 
 ### Via Laravel Installer
 ```
 laravel new src --force
+```
+
+### Via Composer
+```
+composer create-project laravel/laravel src
 ```
 
 ### Configure Environment
@@ -34,7 +39,7 @@ COMPOSE_PROJECT_NAME=laravel-project-1
 docker-compose up -d
 ```
 
-> You can open the project url at [http://localhost:8080](http://localhost:8080) or you can customize the port at [docker-compose.yml](docker-compose.yml).
+> You can open the project url at [http://localhost:8080](http://localhost:8080) or you can customize the port at [docker-compose.yml](docker-compose.yml) or [docker-compose-mac.yml] (docker-compose-mac.yml) if you're using mac.
 
 ### Migrating
 Database host and port in [/src/.env](/src/.env) use `mysql` as host and `port 3306`, this host and port can be accessed by the app container. Therefore, to run `artisan migrate`, please do it via `docker-compose exec`.
