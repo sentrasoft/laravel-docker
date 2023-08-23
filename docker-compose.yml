@@ -35,10 +35,10 @@ services:
             - network
 
     nginx:
-        image: nginx:1.15.8
+        image: nginx:1.23.1
         container_name: ${COMPOSE_PROJECT_NAME}_nginx
         volumes:
-            -- ./.config/.nginx:/etc/nginx/conf.d/default.conf
+            - ./.config/.nginx:/etc/nginx/conf.d/default.conf
             - ./.ssl/local.cert:/etc/ssl/certs/local.cert
             - ./.ssl/local.key:/etc/ssl/certs/local.key
             - ./src:/var/www
